@@ -1,17 +1,15 @@
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,7 +19,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
 
 
 public class Aplikacja extends JFrame implements ActionListener, KeyListener, MouseListener{
@@ -35,10 +37,10 @@ private static final long serialVersionUID = 1L;
 	private JPanel userPanel = new JPanel();
 	private JPanel newAccountPanel = new JPanel();
 	
-	private BufferedImage png = ImageIO.read(new File("E:\\In¿\\Semestr V\\IO\\JAVA\\ParaBank\\src\\logo1.png"));
-	private JLabel logo = new JLabel(new ImageIcon(png));
-	private JLabel logo2 = new JLabel(new ImageIcon(png));
-	private JLabel logo3 = new JLabel(new ImageIcon(png));
+	//private BufferedImage png = ImageIO.read(new File("E:\\In¿\\Semestr V\\IO\\JAVA\\ParaBank\\src\\logo1.png"));
+	//private JLabel logo = new JLabel(new ImageIcon(png));
+	//private JLabel logo2 = new JLabel(new ImageIcon(png));
+	//private JLabel logo3 = new JLabel(new ImageIcon(png));
 	
 	private JMenuBar menuBar = new JMenuBar();
 	private JMenu menuFile = new JMenu("User");
@@ -64,12 +66,17 @@ private static final long serialVersionUID = 1L;
 	private JMenu menuAccount = new JMenu("Account");
 	private JMenuItem menuAccInfo = new JMenuItem("About", KeyEvent.VK_A);
 	private JMenuItem menuRemoveAccount  = new JMenuItem("Delete account", KeyEvent.VK_D);
+	private JMenuItem menuCalc= new JMenuItem("Calculate loan", KeyEvent.VK_C);
+	
 	
 	private JLabel userName = new JLabel("     userName     ");
 	private JLabel userSurname = new JLabel("     userSurname     ");
 	private JLabel userAccBalance = new JLabel("Stan konta: ");
 	
 	private JButton transferButton    = new JButton("Przelew");
+	private JButton loanButton    = new JButton("Po¿yczka");
+	
+	private ViewHist viewList = null;
 	
 	private KontoKlienta activeUser = null;
 	// end userpanel
@@ -93,6 +100,7 @@ private static final long serialVersionUID = 1L;
 	private JButton backButton    = new JButton("Wróæ");
 	
 	private JLabel newError = new JLabel("            B³¹d            ");
+	
 	
 	
 	// end newaccountpanel
@@ -129,6 +137,7 @@ private static final long serialVersionUID = 1L;
 		if(activeUser!=null)
 		{
 			Logged_in = true;
+			setSize(500,300);
 			errorLabel.setForeground(Color.GREEN);
 			errorLabel.setText("               Zalogowano               ");
 			errorLabel.setVisible(true);
@@ -139,8 +148,11 @@ private static final long serialVersionUID = 1L;
 			menuBar.add(menuAccount);
 			menuAccount.add(menuLogOut);
 			menuAccount.add(menuRemoveAccount);
+			menuAccount.add(menuCalc);
+			viewList = new ViewHist(activeUser.hist, 475, 175);
+			viewList.refreshView();
+			userPanel.add(viewList);
 			setContentPane(userPanel);
-			repaint();
 		}
 		else
 		{
@@ -162,9 +174,11 @@ private static final long serialVersionUID = 1L;
 		passField.setText("******");
 		menuAccount.remove(menuLogOut);
 		menuAccount.remove(menuRemoveAccount);
+		menuAccount.remove(menuCalc);
 		menuBar.remove(menuAccount);
+		userPanel.remove(viewList);
+		setSize(225,250);
 		setContentPane(logPanel);
-		repaint();
 	}
 	
 	public void NewAccount() throws IOException 
@@ -205,13 +219,7 @@ private static final long serialVersionUID = 1L;
 	public void actionPerformed(ActionEvent e){
 		Object source = e.getSource();
 		if (source == menuAuthor) {
-			JOptionPane.showMessageDialog(this, "Pozdrowienia dla Rogala", "ParaBank", JOptionPane.INFORMATION_MESSAGE);
-			//----------------------------------------------------------------------------
-			// Do przycisku historia
-			for (Transakcja hist : activeUser.getHist()) {
-				System.out.println(hist.getAmount());
-		    }
-			//----------------------------------------------------------------------------
+			JOptionPane.showMessageDialog(this, "Mateusz Markowski, Marek Morys", "ParaBank", JOptionPane.INFORMATION_MESSAGE);
 		}
 		if (source == menuExit) {
 			System.exit(0);
@@ -244,6 +252,9 @@ private static final long serialVersionUID = 1L;
 		if (source == menuRemoveAccount) {
 			RemoveAccount();
 		}
+		if (source == menuCalc) {
+			activeUser.LiczZdolnosc();
+		}
 		if (source == transferButton) {
 			KontoKlienta dstAcc = baza.CheckUserByNumber(JOptionPane.showInputDialog(this, "Numer konta docelowego: ", "22 1111 1111 0000 0000 0000 000X"));
 			float amount = Float.valueOf(JOptionPane.showInputDialog(this, "Kwota przelewu: "));
@@ -253,7 +264,15 @@ private static final long serialVersionUID = 1L;
 				activeUser.Transfer(activeUser, dstAcc, amount, "Przelew", title);
 				activeUser.setAccountBalance(activeUser.getAccountBalance()-amount);
 				dstAcc.setAccountBalance(dstAcc.getAccountBalance()+amount);
-				userAccBalance.setText("Stan konta: " + Float.toString(activeUser.getAccountBalance()) + " z³");
+				userAccBalance.setText("Stan konta: " + (activeUser.getAccountBalance()) + " z³");
+				viewList.refreshView();
+			}
+		}
+		if (source == loanButton) {
+			if(activeUser.getZdolnosc() == -1) JOptionPane.showMessageDialog(this, "Najpierw trzeba obliczyæ zdolnoœæ kredytow¹", "Oblicz zdolnoœæ kredytow¹", JOptionPane.ERROR_MESSAGE);
+			else {
+				activeUser.setAccountBalance(activeUser.getAccountBalance()+activeUser.getZdolnosc());
+				userAccBalance.setText("Stan konta: " + (activeUser.getAccountBalance()) + " z³");
 			}
 		}
 		
@@ -263,7 +282,10 @@ private static final long serialVersionUID = 1L;
 					"\nStan konta: " + String.valueOf(activeUser.getAccountBalance()) + " z³" +
 					"\nNumer konta: " + activeUser.getNumber() +
 					"\nData utworzenia konta: " + activeUser.getDate() +
-					"\nID klienta: " + activeUser.getOwner().getUser_ID();
+					"\nID klienta: " + activeUser.getOwner().getUser_ID() +
+					"\nZdolnoœæ kredytowa: ";
+			if(activeUser.getZdolnosc() == -1) msg += "-";
+			else msg += "" + activeUser.getZdolnosc();
 			JOptionPane.showMessageDialog(this, msg, "Dane konta", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
@@ -284,6 +306,7 @@ private static final long serialVersionUID = 1L;
 		menuAccInfo.addActionListener(this);
 		menuNewAccount.addActionListener(this);
 		menuRemoveAccount.addActionListener(this);
+		menuCalc.addActionListener(this);
 		
 		menuFile.setMnemonic(KeyEvent.VK_U);
 		menuFile.addSeparator();
@@ -343,7 +366,7 @@ private static final long serialVersionUID = 1L;
 		
 		errorLabel.setVisible(false);
 		
-		logPanel.add(logo);
+		//logPanel.add(logo);
 		logPanel.add(loginLabel);
 		logPanel.add(loginField);
 		logPanel.add(passLabel);
@@ -357,6 +380,7 @@ private static final long serialVersionUID = 1L;
 		userPanel.setBackground(Color.DARK_GRAY);
 		
 		transferButton.addActionListener(this);
+		loanButton.addActionListener(this);
 		
 		userName.setForeground(Color.ORANGE);
 		userSurname.setForeground(Color.ORANGE);
@@ -365,19 +389,24 @@ private static final long serialVersionUID = 1L;
 		menuAccount.setForeground(Color.ORANGE);
 		menuAccInfo.setForeground(Color.ORANGE);
 		menuRemoveAccount.setForeground(Color.ORANGE);
+		menuCalc.setForeground(Color.ORANGE);
 		
 		menuAccount.setBackground(Color.BLACK);
 		menuAccInfo.setBackground(Color.BLACK);
 		menuRemoveAccount.setBackground(Color.BLACK);
+		menuCalc.setBackground(Color.BLACK);
 		
 		transferButton.setForeground(Color.ORANGE);
 		transferButton.setBackground(Color.BLACK);
+		loanButton.setForeground(Color.ORANGE);
+		loanButton.setBackground(Color.BLACK);
 		
-		userPanel.add(logo2);
+		//userPanel.add(logo2);
 		userPanel.add(userName);
 		userPanel.add(userSurname);
 		userPanel.add(userAccBalance);
 		userPanel.add(transferButton);
+		userPanel.add(loanButton);
 	}
 
 	private void createNewAccountPanel() {
@@ -412,7 +441,7 @@ private static final long serialVersionUID = 1L;
 		newAccButton.addActionListener(this);
 		backButton.addActionListener(this);
 		
-		newAccountPanel.add(logo3);
+		//newAccountPanel.add(logo3);
 		
 		newAccountPanel.add(newName);
 		newAccountPanel.add(newNametext);
@@ -476,5 +505,47 @@ private static final long serialVersionUID = 1L;
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	class ViewHist extends JScrollPane {
+	
+		private static final long serialVersionUID = 1L;
+			private List<Transakcja> list;
+			private JTable table;
+			private DefaultTableModel tableModel;
+			public ViewHist(List<Transakcja> list, int width, int height){
+				//getViewport().setBackground(Color.GRAY);
+				//getViewport().setForeground(Color.ORANGE);
+				this.list = list;
+				//setBackground(Color.BLACK);
+				//setForeground(Color.ORANGE);
+				setPreferredSize(new Dimension(width, height));
+				setBorder(BorderFactory.createTitledBorder("Historia przelewów:"));
+				
+				String[] tableHeader = { "Data", "Tytu³", "Kwota", "Konto docelowe" };
+				tableModel = new DefaultTableModel(tableHeader, 0);
+				table = new JTable(tableModel) {
+					
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public boolean isCellEditable(int rowIndex, int colIndex) {
+						return false;
+					}
+				};
+				table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				table.setRowSelectionAllowed(true);
+				setViewportView(table);
+			}
+			
+			void refreshView(){
+				tableModel.setRowCount(0);
+				for (Transakcja group : list) {
+					if (group != null) {
+						String[] row = { group.getDate().toString(), group.getName(), "" + group.getAmount(), group.getDestination().getNumber() };
+						tableModel.addRow(row);
+					}
+				}
+			}
 	}
 }

@@ -11,6 +11,7 @@ public class KontoKlienta extends Uzytkownik{
 	private float accountBalance;
 	private Date date;
 	private Uzytkownik owner;
+	private float zdolnosc;
 	
 	
 	public KontoKlienta() throws IOException{
@@ -20,7 +21,13 @@ public class KontoKlienta extends Uzytkownik{
 		owner = user;
 		this.number = "22 1111 1111 0000 0000 0000 000" + user.getUser_ID();
 		this.accountBalance = 123.45f;
+		this.zdolnosc = -1;
 		this.date = new Date();
+	}
+	
+	public void LiczZdolnosc()
+	{
+		this.zdolnosc = this.accountBalance * 12;
 	}
 	
 	public Uzytkownik getOwner() {
@@ -64,6 +71,14 @@ public class KontoKlienta extends Uzytkownik{
 	public Date getDate()
 	{
 		return date;
+	}
+
+	public float getZdolnosc() {
+		return zdolnosc;
+	}
+
+	public void setZdolnosc(float zdolnosc) {
+		this.zdolnosc = zdolnosc;
 	}
 	
 }
