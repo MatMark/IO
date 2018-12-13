@@ -1,8 +1,10 @@
+import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Uzytkownik{
+public class Uzytkownik extends Aplikacja{
 
+	private static final long serialVersionUID = 1L;
 	private String login;
 	private String password;
 	private int User_ID;
@@ -15,13 +17,12 @@ public class Uzytkownik{
 	private Date BirthDate;
 	private static final AtomicInteger count = new AtomicInteger(0); 
 	
-	
-	public Uzytkownik()
+	public Uzytkownik() throws IOException
 	{
 		
 	}
 	
-	public Uzytkownik(String name, String surname, String login, String password, Boolean pracownik)
+	public Uzytkownik(String name, String surname, String login, String password, Boolean pracownik) throws IOException
 	{
 		this.Name = name;
 		this.Surname = surname;

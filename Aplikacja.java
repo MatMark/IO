@@ -22,12 +22,12 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 
-public class Aplikacja extends JFrame implements ActionListener, KeyListener, MouseListener {
+public class Aplikacja extends JFrame implements ActionListener, KeyListener, MouseListener{
 
 private static final long serialVersionUID = 1L;
 	
 	private boolean Logged_in = false;
-	protected Baza baza = new Baza();
+	public Baza baza = new Baza();
 	
 	private JPanel logPanel = new JPanel();
 	private JPanel userPanel = new JPanel();
@@ -97,8 +97,13 @@ private static final long serialVersionUID = 1L;
 	
 	
 	
-	public static void main(String[] args) throws IOException {
-		new Aplikacja();
+	public static void main(String[] args) {
+		try {
+			new Aplikacja();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public Aplikacja () throws IOException{
@@ -161,7 +166,7 @@ private static final long serialVersionUID = 1L;
 		repaint();
 	}
 	
-	public void NewAccount() 
+	public void NewAccount() throws IOException 
 	{
 		if(newPass1text.getText().equals(newPass2text.getText()))
 		{
@@ -200,6 +205,7 @@ private static final long serialVersionUID = 1L;
 		Object source = e.getSource();
 		if (source == menuAuthor) {
 			JOptionPane.showMessageDialog(this, "Pozdrowienia dla Rogala", "ParaBank", JOptionPane.INFORMATION_MESSAGE);
+			System.out.println(baza.hist.iterator());
 		}
 		if (source == menuExit) {
 			System.exit(0);
@@ -222,7 +228,12 @@ private static final long serialVersionUID = 1L;
 			repaint();
 		}
 		if (source == newAccButton) {
-			NewAccount();
+			try {
+				NewAccount();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		if (source == menuRemoveAccount) {
 			RemoveAccount();

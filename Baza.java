@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -5,13 +6,12 @@ import java.util.List;
 public class Baza {
 	List<KontoKlienta> konta = new ArrayList<>();
 	
-	public Baza()
+	public Baza() throws IOException
 	{
 		konta.add(new KontoKlienta(new Uzytkownik("Tomasz", "Kapelan", "test0", "test0", false)));
 		konta.add(new KontoKlienta(new Uzytkownik("Andrzej", "Marynarzyk", "test1", "test1", false)));
 		konta.add(new KontoKlienta(new Uzytkownik("Jerzy", "Marchewko", "test2", "test2", false)));
 		konta.add(new KontoKlienta(new Uzytkownik("Jerzy", "Piesowski", "test3", "test3", false)));
-		konta.add(new KontoKlienta(new Uzytkownik("Pawe³", "S³yszowski", "test4", "test4", false)));
 	}
 	
 	public boolean HaveAccount(Uzytkownik user)
