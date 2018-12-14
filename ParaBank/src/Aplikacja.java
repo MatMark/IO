@@ -30,7 +30,6 @@ public class Aplikacja extends JFrame implements ActionListener, KeyListener, Mo
 
 private static final long serialVersionUID = 1L;
 	
-	private boolean Logged_in = false;
 	public static Baza baza;
 	
 	private JPanel logPanel = new JPanel();
@@ -135,7 +134,6 @@ private static final long serialVersionUID = 1L;
 		activeUser = baza.CheckLogin(login, password);
 		if(activeUser!=null)
 		{
-			Logged_in = true;
 			setSize(500,300);
 			errorLabel.setForeground(Color.GREEN);
 			errorLabel.setText("               Zalogowano               ");
@@ -163,7 +161,6 @@ private static final long serialVersionUID = 1L;
 	
 	public void Log_out()
 	{
-		Logged_in = false;
 		activeUser = null;
 		errorLabel.setForeground(Color.ORANGE);
 		errorLabel.setText("               Wylogowano               ");
@@ -197,7 +194,7 @@ private static final long serialVersionUID = 1L;
 			setContentPane(newAccountPanel);
 		}
 		if (source == loginButton) {
-			if(!Logged_in) Log_in(loginField.getText(), passField.getText());
+			if(activeUser==null) Log_in(loginField.getText(), passField.getText());
 			else Log_out();
 		}
 		if (source == backButton) {
@@ -256,7 +253,7 @@ private static final long serialVersionUID = 1L;
 	@Override
 	public void keyPressed(KeyEvent e) {
 	    if (e.getKeyCode()==KeyEvent.VK_ENTER){
-	    	if(!Logged_in) Log_in(loginField.getText(), passField.getText());
+	    	if(activeUser==null) Log_in(loginField.getText(), passField.getText());
 			else Log_out();
 	    }
 	}
