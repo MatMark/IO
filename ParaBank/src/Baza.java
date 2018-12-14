@@ -43,4 +43,16 @@ public class Baza {
 	    }
 		return null;
 	}
+	public void DeleteAccount(KontoKlienta konto) 
+	{
+		konta.remove(konto);
+	}
+	public void NewAccount(Uzytkownik user) throws IOException
+	{
+		if(!HaveAccount(user))
+		{
+			konta.add(new KontoKlienta(user));
+		
+		}
+	}
 }

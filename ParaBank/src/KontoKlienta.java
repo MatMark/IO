@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 public class KontoKlienta extends Uzytkownik{
 
 	List<Transakcja> hist =  new ArrayList<>();
@@ -27,7 +29,16 @@ public class KontoKlienta extends Uzytkownik{
 	
 	public void LiczZdolnosc()
 	{
-		this.zdolnosc = this.accountBalance * 12;
+		setZdolnosc(getAccountBalance() * 12);
+	}
+	
+	public boolean Loan()
+	{
+		if(getZdolnosc() == -1) return false;
+		else {
+			setAccountBalance(getAccountBalance()+getZdolnosc());
+			return true;
+		}
 	}
 	
 	public Uzytkownik getOwner() {
@@ -46,9 +57,16 @@ public class KontoKlienta extends Uzytkownik{
 		this.number = number;
 	}
 
-	public void Transfer(KontoKlienta src, KontoKlienta dst, float amount, String cat, String title)
+	public boolean Transfer(KontoKlienta src, KontoKlienta dst, float amount, String cat, String title)
 	{
-		hist.add(new Transakcja(src, dst, amount, cat, title));
+		if (amount > getAccountBalance()) return false;
+		else
+		{
+			hist.add(new Transakcja(src, dst, amount, cat, title));
+			src.setAccountBalance(src.getAccountBalance()-amount);
+			dst.setAccountBalance(dst.getAccountBalance()+amount);
+			return true;
+		}
 	}
 
 

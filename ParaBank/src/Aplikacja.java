@@ -109,7 +109,6 @@ private static final long serialVersionUID = 1L;
 	
 	public static void main(String[] args) throws IOException {
 			new Aplikacja();
-			//baza  = new Baza();
 	}
 	
 	public Aplikacja () throws IOException{
@@ -180,40 +179,6 @@ private static final long serialVersionUID = 1L;
 		setSize(225,250);
 		setContentPane(logPanel);
 	}
-	
-	public void NewAccount() throws IOException 
-	{
-		if(newPass1text.getText().equals(newPass2text.getText()))
-		{
-			Uzytkownik user = new Uzytkownik(newNametext.getText(), newSurnametext.getText(), newLogintext.getText(), newPass1text.getText(), false);
-			if(!baza.HaveAccount(user))
-			{
-				baza.konta.add(new KontoKlienta(user));
-				newError.setForeground(Color.GREEN);
-				newError.setText("Konto zosta³o utworzone");
-				newError.setVisible(true);
-			}
-			else
-			{
-				newError.setForeground(Color.RED);
-				newError.setText("Konto o takich danych ju¿ istnieje");
-				newError.setVisible(true);
-			}
-		}
-		else
-		{
-			newError.setForeground(Color.RED);
-			newError.setText("Podane has³a nie s¹ zgodne");
-			newError.setVisible(true);
-			 //System.out.println("B³¹d");
-		}
-		repaint();
-	}
-	
-	private void RemoveAccount() {
-		if(Logged_in) baza.konta.remove(activeUser);
-		Log_out();
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent e){
@@ -230,7 +195,6 @@ private static final long serialVersionUID = 1L;
 		if (source == menuNewAccount) {
 			setSize(225,390);
 			setContentPane(newAccountPanel);
-			repaint();
 		}
 		if (source == loginButton) {
 			if(!Logged_in) Log_in(loginField.getText(), passField.getText());
@@ -239,18 +203,23 @@ private static final long serialVersionUID = 1L;
 		if (source == backButton) {
 			setSize(225,250);
 			setContentPane(logPanel);
-			repaint();
 		}
 		if (source == newAccButton) {
 			try {
-				NewAccount();
+				if(newPass1text.getText().equals(newPass2text.getText()))
+				{
+					baza.NewAccount(new Uzytkownik(newNametext.getText(), newSurnametext.getText(), newLogintext.getText(), newPass1text.getText(), false));
+					setSize(225,250);
+					setContentPane(logPanel);
+				}
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
 		if (source == menuRemoveAccount) {
-			RemoveAccount();
+			if(activeUser!=null) baza.DeleteAccount(activeUser);
+			Log_out();
 		}
 		if (source == menuCalc) {
 			activeUser.LiczZdolnosc();
@@ -258,22 +227,16 @@ private static final long serialVersionUID = 1L;
 		if (source == transferButton) {
 			KontoKlienta dstAcc = baza.CheckUserByNumber(JOptionPane.showInputDialog(this, "Numer konta docelowego: ", "22 1111 1111 0000 0000 0000 000X"));
 			float amount = Float.valueOf(JOptionPane.showInputDialog(this, "Kwota przelewu: "));
-			if(amount > activeUser.getAccountBalance()) JOptionPane.showMessageDialog(this, "Wybrana kwota jest zbyt wysoka", "Zbyt wysoka kwota", JOptionPane.ERROR_MESSAGE);
+			String title = JOptionPane.showInputDialog(this, "Tytu³ przelewu: ");
+			if(!activeUser.Transfer(activeUser, dstAcc, amount, "Przelew", title)) JOptionPane.showMessageDialog(this, "Wybrana kwota jest zbyt wysoka", "Zbyt wysoka kwota", JOptionPane.ERROR_MESSAGE);
 			else {
-				String title = JOptionPane.showInputDialog(this, "Tytu³ przelewu: ");
-				activeUser.Transfer(activeUser, dstAcc, amount, "Przelew", title);
-				activeUser.setAccountBalance(activeUser.getAccountBalance()-amount);
-				dstAcc.setAccountBalance(dstAcc.getAccountBalance()+amount);
 				userAccBalance.setText("Stan konta: " + (activeUser.getAccountBalance()) + " z³");
 				viewList.refreshView();
 			}
 		}
 		if (source == loanButton) {
-			if(activeUser.getZdolnosc() == -1) JOptionPane.showMessageDialog(this, "Najpierw trzeba obliczyæ zdolnoœæ kredytow¹", "Oblicz zdolnoœæ kredytow¹", JOptionPane.ERROR_MESSAGE);
-			else {
-				activeUser.setAccountBalance(activeUser.getAccountBalance()+activeUser.getZdolnosc());
-				userAccBalance.setText("Stan konta: " + (activeUser.getAccountBalance()) + " z³");
-			}
+			if(!activeUser.Loan()) JOptionPane.showMessageDialog(this, "Najpierw trzeba obliczyæ zdolnoœæ kredytow¹", "Oblicz zdolnoœæ kredytow¹", JOptionPane.ERROR_MESSAGE);
+			userAccBalance.setText("Stan konta: " + (activeUser.getAccountBalance()) + " z³");
 		}
 		
 		if (source == menuAccInfo) {
