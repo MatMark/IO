@@ -1,3 +1,5 @@
+package com.company;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -35,12 +37,12 @@ private static final long serialVersionUID = 1L;
 	private JPanel logPanel = new JPanel();
 	private JPanel userPanel = new JPanel();
 	private JPanel newAccountPanel = new JPanel();
-	
+
 	//private BufferedImage png = ImageIO.read(new File("E:\\In¿\\Semestr V\\IO\\JAVA\\ParaBank\\src\\logo1.png"));
 	//private JLabel logo = new JLabel(new ImageIcon(png));
 	//private JLabel logo2 = new JLabel(new ImageIcon(png));
 	//private JLabel logo3 = new JLabel(new ImageIcon(png));
-	
+
 	private JMenuBar menuBar = new JMenuBar();
 	private JMenu menuFile = new JMenu("User");
 	private JMenu menuHelp = new JMenu("Help");
@@ -48,33 +50,33 @@ private static final long serialVersionUID = 1L;
 	private JMenuItem menuLogOut = new JMenuItem("Logout", KeyEvent.VK_L);
 	private JMenuItem menuNewAccount  = new JMenuItem("New account", KeyEvent.VK_N);
 	private JMenuItem menuAuthor = new JMenuItem("Author", KeyEvent.VK_A);
-	
+
 	// logpanel
 	private JLabel loginLabel =    new JLabel("              Login:              ");
 	private JLabel passLabel =    new JLabel("              Has³o:              ");
 	private JLabel errorLabel = new JLabel("            B³¹d logowania            ");
-	
+
 	private JTextField loginField = new JTextField("login", 16);
 	private JPasswordField passField    = new JPasswordField("******", 16);
-	
+
 	private JButton loginButton    = new JButton("Zaloguj");
 	// end logpanel
-	
+
 	// userpanel
-	
+
 	private JMenu menuAccount = new JMenu("Account");
 	private JMenuItem menuAccInfo = new JMenuItem("About", KeyEvent.VK_A);
 	private JMenuItem menuRemoveAccount  = new JMenuItem("Delete account", KeyEvent.VK_D);
 	private JMenuItem menuCalc= new JMenuItem("Calculate loan", KeyEvent.VK_C);
-	
-	
+
+
 	private JLabel userName = new JLabel("     userName     ");
 	private JLabel userSurname = new JLabel("     userSurname     ");
 	private JLabel userAccBalance = new JLabel("Stan konta: ");
-	
+
 	private JButton transferButton    = new JButton("Przelew");
 	private JButton loanButton    = new JButton("Po¿yczka");
-	
+
 	private ViewHist viewList = null;
 	
 	private KontoKlienta activeUser = null;
@@ -88,27 +90,21 @@ private static final long serialVersionUID = 1L;
 	private JLabel newLogin = new JLabel("Login: ");
 	private JLabel newPass1 = new JLabel("Has³o: ");
 	private JLabel newPass2 = new JLabel("Powtórz has³o: ");
-	
+
 	private JTextField newNametext = new JTextField("------", 16);
 	private JTextField newSurnametext = new JTextField("------", 16);
 	private JTextField newLogintext = new JTextField("------", 16);
 	private JPasswordField newPass1text    = new JPasswordField("******", 16);
 	private JPasswordField newPass2text   = new JPasswordField("******", 16);
-	
+
 	private JButton newAccButton    = new JButton("Utwórz konto");
 	private JButton backButton    = new JButton("Wróæ");
-	
+
 	private JLabel newError = new JLabel("            B³¹d            ");
 	
 	
 	
 	// end newaccountpanel
-	
-	
-	
-	public static void main(String[] args) throws IOException {
-			new Aplikacja();
-	}
 	
 	public Aplikacja () throws IOException{
 		super("ParaBank");
@@ -120,7 +116,7 @@ private static final long serialVersionUID = 1L;
 		baza  = new Baza();
 		
 		createMenuBar();
-		
+
 		createLogPanel();
 		createUserPanel();
 		createNewAccountPanel();
@@ -225,7 +221,7 @@ private static final long serialVersionUID = 1L;
 			KontoKlienta dstAcc = baza.CheckUserByNumber(JOptionPane.showInputDialog(this, "Numer konta docelowego: ", "22 1111 1111 0000 0000 0000 000X"));
 			float amount = Float.valueOf(JOptionPane.showInputDialog(this, "Kwota przelewu: "));
 			String title = JOptionPane.showInputDialog(this, "Tytu³ przelewu: ");
-			if(!activeUser.Transfer(activeUser, dstAcc, amount, "Przelew", title)) JOptionPane.showMessageDialog(this, "Wybrana kwota jest zbyt wysoka", "Zbyt wysoka kwota", JOptionPane.ERROR_MESSAGE);
+			if(!activeUser.Transfer(activeUser, dstAcc, amount, title)) JOptionPane.showMessageDialog(this, "Wybrana kwota jest zbyt wysoka", "Zbyt wysoka kwota", JOptionPane.ERROR_MESSAGE);
 			else {
 				userAccBalance.setText("Stan konta: " + (activeUser.getAccountBalance()) + " z³");
 				viewList.refreshView();

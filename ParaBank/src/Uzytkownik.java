@@ -1,3 +1,5 @@
+package com.company;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -9,11 +11,7 @@ public class Uzytkownik{
 	private int User_ID;
 	private String Name;
 	private String Surname;
-	private String PESEL;
-	private String NIP;
-	private int Telephone;
-	private String Email;
-	private Date BirthDate;
+
 	private static final AtomicInteger count = new AtomicInteger(0); 
 	
 	public Uzytkownik() throws IOException
@@ -70,46 +68,5 @@ public class Uzytkownik{
 	public void setSurname(String surname) {
 		Surname = surname;
 	}
-
-	public String getPESEL() {
-		return PESEL;
-	}
-
-	public void setPESEL(String pESEL) {
-		PESEL = pESEL;
-	}
-
-	public String getNIP() {
-		return NIP;
-	}
-
-	public void setNIP(String nIP) {
-		NIP = nIP;
-	}
-
-	public int getTelephone() {
-		return Telephone;
-	}
-
-	public void setTelephone(int telephone) {
-		Telephone = telephone;
-	}
-
-	public String getEmail() {
-		return Email;
-	}
-
-	public void setEmail(String email) {
-		Email = email;
-	}
-
-	public Date getBirthDate() {
-		return BirthDate;
-	}
-
-	public void setBirthDate(Date birthDate) {
-		BirthDate = birthDate;
-	}
-	
 	
 }

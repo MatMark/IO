@@ -1,9 +1,9 @@
+package com.company;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import javax.swing.JOptionPane;
 
 public class KontoKlienta extends Uzytkownik{
 
@@ -57,12 +57,12 @@ public class KontoKlienta extends Uzytkownik{
 		this.number = number;
 	}
 
-	public boolean Transfer(KontoKlienta src, KontoKlienta dst, float amount, String cat, String title)
+	public boolean Transfer(KontoKlienta src, KontoKlienta dst, float amount, String title)
 	{
 		if (amount > getAccountBalance()) return false;
 		else
 		{
-			hist.add(new Transakcja(src, dst, amount, cat, title));
+			hist.add(new Transakcja(src, dst, amount, title));
 			src.setAccountBalance(src.getAccountBalance()-amount);
 			dst.setAccountBalance(dst.getAccountBalance()+amount);
 			return true;

@@ -1,34 +1,28 @@
+package com.company;
+
 import java.util.Date;
 
 public class Transakcja {
 	private Date date;
 	private float amount;
-	private String category;
 	private String name;
 	private KontoKlienta source;
 	private KontoKlienta destination;
-	
-	public Transakcja()
-	{
-		
-	}
-	
-	public Transakcja(KontoKlienta src, KontoKlienta dst, float amount, String cat)
+
+	public Transakcja(KontoKlienta src, KontoKlienta dst, float amount)
 	{
 		this.source = src;
 		this.destination = dst;
 		this.amount = amount;
-		this.category = cat;
 		this.date = new Date();
 		this.name = "-";
 	}
 	
-	public Transakcja(KontoKlienta src, KontoKlienta dst, float amount,String cat, String name)
+	public Transakcja(KontoKlienta src, KontoKlienta dst, float amount, String name)
 	{
 		this.source = src;
 		this.destination = dst;
 		this.amount = amount;
-		this.category = cat;
 		this.date = new Date();
 		this.name = name;
 		
@@ -48,14 +42,6 @@ public class Transakcja {
 
 	public void setAmount(float amount) {
 		this.amount = amount;
-	}
-
-	public String getCategory() {
-		return category;
-	}
-
-	public void setCategory(String category) {
-		this.category = category;
 	}
 
 	public String getName() {
