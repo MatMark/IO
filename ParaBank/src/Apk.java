@@ -124,13 +124,21 @@ public class Apk {
     }
 
     public void Log_in(String login, String password) {
-        activeUser = baza.CheckLogin(login, password);
-        if(activeUser==null) System.out.println("Nieudane logowanie");
+        setActiveUser(baza.CheckLogin(login, password));
+        if(getActiveUser()==null) System.out.println("Nieudane logowanie");
     }
 
     public void Log_out() {
-        activeUser = null;
+        setActiveUser(null);
         System.out.println("Wylogowano");
+    }
+
+    public KontoKlienta getActiveUser() {
+        return activeUser;
+    }
+
+    public void setActiveUser(KontoKlienta user) {
+        this.activeUser = user;
     }
 
 }
