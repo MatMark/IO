@@ -62,9 +62,9 @@ public class Apk {
             else
             {
                 System.out.println("Zalogowano " + activeUser.getOwner().getName() + " " + activeUser.getOwner().getSurname() + " Stan konta: " + activeUser.getAccountBalance() + "\nNumer konta: " + activeUser.getNumber());
-                float amount;
+                float amount,loan;
                 String num, title;
-                System.out.println("Wybierz:\n1. Wyloguj sie\n2. Przelew\n3. Wyswietl historie przelewow\n4. Wyjscie\n");
+                System.out.println("Wybierz:\n1. Wyloguj sie\n2. Przelew\n3. Wyswietl historie przelewow\n4. Pozyczka\n5. Usun konto\n6. Wyjscie\n");
                 switch (chooser = in.nextInt()) {
                     case 1:
                         Log_out();
@@ -83,7 +83,6 @@ public class Apk {
                         System.out.println("Podaj kwote przelewu:\n");
                         amount = in.nextFloat();
                         if(!activeUser.Transfer(activeUser, dstAcc, amount, title)) System.out.println("Nie wystarczajaca ilosc srodkow na koncie");
-
                         break;
 
                     case 3:
@@ -91,6 +90,27 @@ public class Apk {
                         break;
 
                     case 4:
+                        activeUser.LiczZdolnosc();
+                        System.out.println("Podaj kwote jaka chcesz pozyczyc:\n");
+                        loan = in.nextFloat();
+                        if(loan> activeUser.getZdolnosc()) System.out.println("Podana kwota jest zbyt wysoka maksymalna mozliwa kwota to: " + activeUser.getZdolnosc());
+                        else
+                        {
+                            activeUser.Loan(loan);
+                            System.out.println("Pomyslnie wzieto pozyczke na kwote " + loan);
+                        }
+                        break;
+
+                    case 5:
+                        if(activeUser!=null)
+                        {
+                            baza.DeleteAccount(activeUser);
+                            System.out.println("Konto zostalo usuniete pomyslnie\n");
+                        }
+                        Log_out();
+                        break;
+
+                    case 6:
                         run = false;
                         System.exit(0);
                         break;

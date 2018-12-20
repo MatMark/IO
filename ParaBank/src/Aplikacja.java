@@ -228,8 +228,8 @@ private static final long serialVersionUID = 1L;
 			}
 		}
 		if (source == loanButton) {
-			if(!activeUser.Loan()) JOptionPane.showMessageDialog(this, "Najpierw trzeba obliczyæ zdolnoœæ kredytow¹", "Oblicz zdolnoœæ kredytow¹", JOptionPane.ERROR_MESSAGE);
-			userAccBalance.setText("Stan konta: " + (activeUser.getAccountBalance()) + " z³");
+		//	if(!activeUser.Loan()) JOptionPane.showMessageDialog(this, "Najpierw trzeba obliczyæ zdolnoœæ kredytow¹", "Oblicz zdolnoœæ kredytow¹", JOptionPane.ERROR_MESSAGE);
+		//	userAccBalance.setText("Stan konta: " + (activeUser.getAccountBalance()) + " z³");
 		}
 		
 		if (source == menuAccInfo) {

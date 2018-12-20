@@ -32,11 +32,11 @@ public class KontoKlienta extends Uzytkownik{
 		setZdolnosc(getAccountBalance() * 12);
 	}
 	
-	public boolean Loan()
+	public boolean Loan(float amount)
 	{
 		if(getZdolnosc() == -1) return false;
 		else {
-			setAccountBalance(getAccountBalance()+getZdolnosc());
+			setAccountBalance(getAccountBalance()+amount);
 			return true;
 		}
 	}
