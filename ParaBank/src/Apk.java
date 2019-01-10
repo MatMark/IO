@@ -1,7 +1,6 @@
 package com.company;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Scanner;
 
 public class Apk {
@@ -102,11 +101,8 @@ public class Apk {
                         break;
 
                     case 5:
-                        if(activeUser!=null)
-                        {
-                            baza.DeleteAccount(activeUser);
-                            System.out.println("Konto zostalo usuniete pomyslnie\n");
-                        }
+                        baza.DeleteAccount(activeUser);
+                        System.out.println("Konto zostalo usuniete pomyslnie\n");
                         Log_out();
                         break;
 
